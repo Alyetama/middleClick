@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MiddleClick</title>
+<style>
+  :root {
+    --grad-a: #6366f1;
+    --grad-b: #8b5cf6;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(1200px 600px at 50% -10%, var(--grad-b), var(--grad-a) 60%, #4338ca);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 72px 24px 96px; text-align: center; }
+  h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); color: #fff; letter-spacing: -0.02em; }
+  .tagline { color: rgba(255,255,255,0.85); font-size: clamp(1rem, 2.5vw, 1.35rem); margin-top: 14px; }
+  .shot { margin: 44px auto 0; max-width: 100%; border-radius: 16px;
+          box-shadow: 0 30px 80px rgba(0,0,0,0.35); display: block; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 10px; margin-top: 40px;
+    background: #fff; color: var(--ink); font-size: 1.15rem; font-weight: 600;
+    padding: 16px 30px; border-radius: 999px; text-decoration: none;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25); transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,0.3); }
+  .cta small { color: var(--muted); font-weight: 500; }
+  .howto {
+    margin: 56px auto 0; max-width: 640px; text-align: left;
+    background: var(--card); border-radius: 16px; padding: 28px 30px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18); scroll-margin-top: 24px;
+    transition: box-shadow .3s ease, outline-color .3s ease;
+    outline: 2px solid transparent;
+  }
+  .howto.flash { outline-color: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,0.5), 0 12px 40px rgba(0,0,0,0.25); }
+  .howto h2 { font-size: 1.3rem; margin-bottom: 6px; }
+  .howto p { color: var(--muted); margin: 10px 0; line-height: 1.55; }
+  .howto ol { margin: 14px 0 0 20px; }
+  .howto li { margin: 12px 0; line-height: 1.55; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+         background: #f1f5f9; padding: 2px 7px; border-radius: 6px; font-size: .92em; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 14px 16px; border-radius: 10px;
+        overflow-x: auto; margin-top: 10px; }
+  pre code { background: none; color: inherit; padding: 0; }
+  footer { color: rgba(255,255,255,0.75); margin-top: 64px; font-size: .9rem; }
+  footer a { color: #fff; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>MiddleClick</h1>
+    <p class="tagline">Real middle-click from a three-finger trackpad tap.</p>
+
+    <img class="shot" src="mockup.png" alt="MiddleClick screenshot" />
+
+    <a class="cta" id="download" href="https://github.com/Alyetama/middleClick/releases/latest/download/MiddleClick.dmg">
+      ⬇︎ Download for macOS <small>· .dmg</small>
+    </a>
+
+    <section class="howto" id="howto">
+      <h2>First launch (opening an unsigned app)</h2>
+      <p><strong>MiddleClick isn't signed with an Apple Developer ID</strong>, so macOS
+      blocks it the first time you open it. This is expected — do one of these once
+      and it opens normally afterward.</p>
+      <ol>
+        <li><strong>Right-click to open.</strong> In Finder, <strong>Control-click</strong>
+        (or right-click) <code>MiddleClick</code>, choose <strong>Open</strong>, then click
+        <strong>Open</strong> again in the dialog.</li>
+        <li><strong>If macOS still won't let you (newer versions):</strong> open
+        <strong>System Settings → Privacy &amp; Security</strong>, scroll down to the message
+        about <code>MiddleClick</code> being blocked, and click <strong>Open Anyway</strong>.
+        Confirm with <strong>Open Anyway</strong> (and Touch ID or your password if asked).</li>
+        <li><strong>Terminal fallback.</strong> If neither works, remove the quarantine flag:
+          <pre><code>/usr/bin/xattr -dr com.apple.quarantine /Applications/MiddleClick.app</code></pre>
+        </li>
+      </ol>
+    </section>
+
+    <footer>
+      <a href="https://github.com/Alyetama/middleClick">View on GitHub</a>
+      · MIT © 2026 Alyetama
+    </footer>
+  </div>
+
+  <script>
+    // Download starts via the href; we also reveal + scroll to the instructions
+    // so nobody has to hunt for how to open a blocked app.
+    document.getElementById('download').addEventListener('click', function () {
+      var howto = document.getElementById('howto');
+      howto.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      howto.classList.add('flash');
+      setTimeout(function () { howto.classList.remove('flash'); }, 2200);
+    });
+  </script>
+</body>
+</html>
