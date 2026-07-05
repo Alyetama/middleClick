@@ -26,3 +26,7 @@ Icon?
 node_modules/
 AppIcon.iconset/
 icon_1024.png
+
+# local dev config
+.claude/
+release-notes.md
