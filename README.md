@@ -12,10 +12,16 @@ A tiny macOS menu-bar app that turns a three-finger tap on the trackpad into a r
 
 ## Features
 
-- Detects a real tap (quick touch + release, no swipe, no long rest) via Apple's private `MultitouchSupport` framework and synthesizes a genuine center-button click event.
-- Configurable finger count (2, 3, or 4) and a sensitivity slider to tune tap timing/movement tolerance.
+- Detects a tap (fingers touch and lift without swiping or resting) via Apple's private `MultitouchSupport` framework and synthesizes a genuine center-button click event.
+- Configurable finger count (2, 3, or 4) and a sensitivity slider that widens both the tap window (0.30 s at the low end to 1.20 s at the high end) and the movement tolerance before a tap counts as a swipe.
 - Menu-bar only — no Dock icon, no windows.
 - Optional Launch at Login (via `SMAppService`).
+
+At a 3- or 4-finger setting, one extra contact is tolerated, so a thumb or palm grazing the trackpad still registers. A 2-finger setting requires exactly two.
+
+## Requirements
+
+macOS 13 or newer, **Apple Silicon only**. The released DMG contains an `arm64`-only binary (`lipo -archs` reports `arm64`) — `build_app.sh` builds for the host architecture and does not produce a universal binary, so the download will not run on an Intel Mac. Building from source on an Intel Mac should produce an `x86_64` binary, but that has not been tested. Developed and tested on macOS 26.5.1 (M5 Pro).
 
 ## First launch (opening an unsigned app)
 
@@ -48,6 +54,28 @@ After first launch, grant **Accessibility** access when prompted (System Setting
 git clone https://github.com/Alyetama/middleClick.git
 cd middleClick
 ./build_app.sh
+```
+
+Produces `MiddleClick.app` in the project root, ad-hoc signed. Move it to `/Applications`.
+
+## Limitations
+
+- **Apple Silicon only** in the released build — see Requirements above.
+- **Ad-hoc signed, not notarized.** Every rebuild changes the signature, so macOS drops the Accessibility grant; remove and re-add the app after upgrading.
+- **Built on a private framework.** `MultitouchSupport` is not public API. It has been stable for years and is what other trackpad utilities use, but Apple can change or remove it in any macOS release.
+- **Trackpad only.** The gesture path reads multitouch devices; it does not remap buttons on a mouse that already has a physical middle button.
+- **Overlaps with system gestures.** A three-finger setting shares hardware with macOS three-finger swipes; the movement check is what separates a tap from a swipe, so a sloppy swipe can still register as a tap at high sensitivity. Lower the slider or switch to four fingers if that happens.
+- **Not verified end to end in an automated test.** A real trackpad tap cannot be synthesized programmatically, so detection and click emission were each verified in code and by build, but the full gesture-to-click path is confirmed only by using it. To watch it decide in real time:
+
+```bash
+osascript -e 'quit app "MiddleClick"'
+MIDDLECLICK_DEBUG=1 /Applications/MiddleClick.app/Contents/MacOS/MiddleClick
+```
+
+Each gesture logs one line in this format (from the `NSLog` call in `GestureDetector.swift`), ending in `FIRE` when a middle click is posted or `skip` when the gesture was rejected:
+
+```
+MiddleClick tap: max=%d needed=%d elapsed=%.3fs moved=%@ -> %@
 ```
 
 ## License

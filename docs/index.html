@@ -48,6 +48,8 @@
   }
   .howto.flash { outline-color: var(--accent); box-shadow: 0 0 0 6px rgba(129,140,248,0.35), 0 12px 40px rgba(0,0,0,0.5); }
   .howto h2 { font-size: 1.3rem; margin-bottom: 6px; color: #fff; }
+  .howto h2.second { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); }
+  .howto .note { font-size: .85rem; margin-top: 8px; }
   .howto p { color: var(--muted); margin: 10px 0; line-height: 1.55; }
   .howto strong { color: var(--ink); }
   .howto ol { margin: 14px 0 0 20px; }
@@ -60,6 +62,12 @@
   pre code { background: none; color: inherit; padding: 0; }
   footer { color: rgba(231,234,246,0.6); margin-top: 64px; font-size: .9rem; }
   footer a { color: var(--accent); }
+  /* Keep the xattr command fully visible on phones instead of scrolling it. */
+  @media (max-width: 560px) {
+    .howto { padding: 22px 18px; }
+    pre { padding: 12px; }
+    pre code { font-size: .64rem; }
+  }
 </style>
 </head>
 <body>
@@ -87,9 +95,22 @@
         about <code>MiddleClick</code> being blocked, and click <strong>Open Anyway</strong>.
         Confirm with <strong>Open Anyway</strong> (and Touch ID or your password if asked).</li>
         <li><strong>Terminal fallback.</strong> If neither works, remove the quarantine flag:
-          <pre><code>/usr/bin/xattr -dr com.apple.quarantine /Applications/MiddleClick.app</code></pre>
+          <pre><code>/usr/bin/xattr -dr com.apple.quarantine \
+  /Applications/MiddleClick.app</code></pre>
+          <p class="note">(Wrapped across two lines to fit; paste it as-is — the
+          <code>\</code> continues the command.)</p>
         </li>
       </ol>
+
+      <h2 class="second">Then grant Accessibility access</h2>
+      <p><strong>Required.</strong> MiddleClick posts a synthetic mouse event, which macOS
+      only permits with Accessibility access. Until it is granted the app runs and shows its
+      menu-bar icon, but taps do nothing.</p>
+      <p>Open <strong>System Settings → Privacy &amp; Security → Accessibility</strong> and
+      enable <strong>MiddleClick</strong>, then quit and relaunch it. The app prompts for
+      this on first launch, and its menu shows the current status.</p>
+      <p>Because the app is ad-hoc signed, replacing it with a newer build invalidates the
+      grant — remove the old entry and re-add the app after upgrading.</p>
     </section>
 
     <footer>
