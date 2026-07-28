@@ -21,7 +21,7 @@ At a 3- or 4-finger setting, one extra contact is tolerated, so a thumb or palm 
 
 ## Requirements
 
-macOS 13 or newer, **Apple Silicon only**. The released DMG contains an `arm64`-only binary (`lipo -archs` reports `arm64`) — `build_app.sh` builds for the host architecture and does not produce a universal binary, so the download will not run on an Intel Mac. Building from source on an Intel Mac should produce an `x86_64` binary, but that has not been tested. Developed and tested on macOS 26.5.1 (M5 Pro).
+macOS 13 or newer, Apple Silicon or Intel. The released app is a universal binary — `lipo -archs` reports `x86_64 arm64`, and both slices link `MultitouchSupport`. Developed and tested on macOS 26.5.1 (M5 Pro); the `x86_64` slice builds and links but has not been run on Intel hardware.
 
 ## First launch (opening an unsigned app)
 
@@ -60,7 +60,7 @@ Produces `MiddleClick.app` in the project root, ad-hoc signed. Move it to `/Appl
 
 ## Limitations
 
-- **Apple Silicon only** in the released build — see Requirements above.
+- **Untested on Intel.** The binary is universal and the `x86_64` slice links correctly, but it has only been run on Apple Silicon.
 - **Ad-hoc signed, not notarized.** Every rebuild changes the signature, so macOS drops the Accessibility grant; remove and re-add the app after upgrading.
 - **Built on a private framework.** `MultitouchSupport` is not public API. It has been stable for years and is what other trackpad utilities use, but Apple can change or remove it in any macOS release.
 - **Trackpad only.** The gesture path reads multitouch devices; it does not remap buttons on a mouse that already has a physical middle button.

@@ -3,12 +3,13 @@ set -euo pipefail
 
 APP="MiddleClick"
 BUNDLE_ID="com.fcatus.middleclick"
-VERSION="1.0.0"
+VERSION="1.0.1"
 
-echo "==> Building ($APP) release binary…"
-swift build -c release
+# Universal so the shipped app runs on both Apple Silicon and Intel Macs.
+echo "==> Building ($APP) universal release binary (arm64 + x86_64)…"
+swift build -c release --arch arm64 --arch x86_64
 
-BIN=".build/release/$APP"
+BIN=".build/apple/Products/Release/$APP"
 APPDIR="$APP.app"
 
 echo "==> Assembling $APPDIR…"
